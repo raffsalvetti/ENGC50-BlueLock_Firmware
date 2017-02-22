@@ -15,6 +15,13 @@ void at24c64_init() {
 	_delay_us(10);
 }
 
+void at24c64_format() {
+	uint8_t i = 0;
+	for (i = 0; i < AT24C64_MAX_ADDRESS; i++) {
+		at24c64_write_byte(i, 0x0);
+	}
+}
+
 void at24c64_write_byte(uint16_t address, uint8_t byte) {
 	i2c_start_wait(AT24C64_ADDR | I2C_WRITE);
 	i2c_write((uint8_t)(address >> 8));

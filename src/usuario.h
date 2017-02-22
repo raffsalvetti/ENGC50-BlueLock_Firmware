@@ -22,7 +22,7 @@ typedef struct {
 	uint16_t codigo; //endereco de memoria i2c eeprom ou numero da linha de arquivo txt no sdcard
 	uint16_t matricula;
 	uint16_t senha;
-} usuario;
+} usuario_t;
 
 typedef struct {
 	uint8_t config;
@@ -33,15 +33,15 @@ typedef struct {
 	uint8_t hora;
 	uint8_t minuto;
 	uint8_t segundo;
-} acesso;
+} acesso_t;
 
-extern void (*usuario_listar_callback)(usuario *u);
+extern void (*usuario_listar_callback)(usuario_t *u);
 
-extern void usuario_adicionar(usuario *u);
+extern void usuario_adicionar(usuario_t *u);
 extern void usuario_listar();
-extern void usuario_editar(usuario *u);
-extern void usuario_remover(usuario *u);
+extern void usuario_editar(usuario_t *u);
+extern void usuario_remover(usuario_t *u);
 
-extern void usuario_relatorio_acesso(acesso *a);
+extern void usuario_relatorio_acesso(acesso_t *a);
 
 #endif /* SRC_USUARIO_H_ */

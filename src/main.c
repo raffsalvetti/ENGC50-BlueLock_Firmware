@@ -19,6 +19,8 @@
 #include "ds1307/ds1307.h"
 #include "at24c64/at24c64.h"
 
+#define SIMULACAO_PROTEUS
+
 #define VERSION "1"
 
 #define ACK_CHAR '!'
