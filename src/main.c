@@ -142,10 +142,13 @@ int main(void) {
 
 			} else if(rxc == 'd') { //del user
 				uart_putc(ACK_CHAR); //ack byte
+
 			} else if(rxc == 'e') { //edit user
 				uart_putc(ACK_CHAR); //ack byte
+
 			} else if(rxc == 'v') { //show version
 				uart_putc(ACK_CHAR); //ack byte
+
 			} else if(rxc == 't') { //teste
 				uart_putc(ACK_CHAR); //ack byte
 //				at24c64_write_byte(0x00, 'x');

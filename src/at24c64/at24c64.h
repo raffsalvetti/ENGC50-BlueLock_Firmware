@@ -10,6 +10,8 @@
 
 #define AT24C64_SEQUANTIAL_READ_SIZE 10
 
+#define AT24C64_MAX_ADDRESS (8*1024)
+
 #define AT24C64_ADDR (0x50 << 1) //endereco 1010000X (X eh read ou write)
 
 extern void at24c64_init();

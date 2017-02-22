@@ -17,13 +17,13 @@ OBJS += \
 ./src/pfatfs/pff.o \
 ./src/pfatfs/usi.o 
 
+S_UPPER_DEPS += \
+./src/pfatfs/usi.d 
+
 C_DEPS += \
 ./src/pfatfs/diskio.d \
 ./src/pfatfs/mmc.d \
 ./src/pfatfs/pff.d 
-
-S_UPPER_DEPS += \
-./src/pfatfs/usi.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

@@ -19,9 +19,6 @@ RM := rm -rf
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(strip $(C_DEPS)),)
--include $(C_DEPS)
-endif
 ifneq ($(strip $(ASM_DEPS)),)
 -include $(ASM_DEPS)
 endif
@@ -31,44 +28,47 @@ endif
 ifneq ($(strip $(S_UPPER_DEPS)),)
 -include $(S_UPPER_DEPS)
 endif
+ifneq ($(strip $(C_DEPS)),)
+-include $(C_DEPS)
+endif
 endif
 
 -include ../makefile.defs
 
 # Add inputs and outputs from these tool invocations to the build variables 
 LSS += \
-ENGC50-TrancaEletronica_Firmware.lss \
+ENGC50-BlueLock_Firmware.lss \
 
 SIZEDUMMY += \
 sizedummy \
 
 
 # All Target
-all: ENGC50-TrancaEletronica_Firmware.elf secondary-outputs
+all: ENGC50-BlueLock_Firmware.elf secondary-outputs
 
 # Tool invocations
-ENGC50-TrancaEletronica_Firmware.elf: $(OBJS) $(USER_OBJS)
+ENGC50-BlueLock_Firmware.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: AVR C Linker'
-	avr-gcc -Wl,-Map,ENGC50-TrancaEletronica_Firmware.map -mmcu=atmega8 -o "ENGC50-TrancaEletronica_Firmware.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	avr-gcc -Wl,-Map,ENGC50-BlueLock_Firmware.map -mmcu=atmega8 -o "ENGC50-BlueLock_Firmware.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-ENGC50-TrancaEletronica_Firmware.lss: ENGC50-TrancaEletronica_Firmware.elf
+ENGC50-BlueLock_Firmware.lss: ENGC50-BlueLock_Firmware.elf
 	@echo 'Invoking: AVR Create Extended Listing'
-	-avr-objdump -h -S ENGC50-TrancaEletronica_Firmware.elf  >"ENGC50-TrancaEletronica_Firmware.lss"
+	-avr-objdump -h -S ENGC50-BlueLock_Firmware.elf  >"ENGC50-BlueLock_Firmware.lss"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-sizedummy: ENGC50-TrancaEletronica_Firmware.elf
+sizedummy: ENGC50-BlueLock_Firmware.elf
 	@echo 'Invoking: Print Size'
-	-avr-size --format=avr --mcu=atmega8 ENGC50-TrancaEletronica_Firmware.elf
+	-avr-size --format=avr --mcu=atmega8 ENGC50-BlueLock_Firmware.elf
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(ASM_DEPS)$(ELFS)$(LSS)$(S_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS) ENGC50-TrancaEletronica_Firmware.elf
+	-$(RM) $(ELFS)$(OBJS)$(ASM_DEPS)$(S_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(LSS)$(C_DEPS) ENGC50-BlueLock_Firmware.elf
 	-@echo ' '
 
 secondary-outputs: $(LSS) $(SIZEDUMMY)
