@@ -26,6 +26,7 @@ typedef struct {
 
 typedef struct {
 	uint8_t config;
+	uint16_t codigo;
 	uint16_t cod_usuario; //endereco de memoria i2c eeprom ou numero da linha de arquivo txt no sdcard
 	uint8_t ano;
 	uint8_t mes;
@@ -35,7 +36,11 @@ typedef struct {
 	uint8_t segundo;
 } acesso_t;
 
+#define NEXT_USUARIO ((sizeof(usuario_t) - sizeof(uint16_t)) / sizeof(uint8_t))
+#define NEXT_REGISTRO_ACESSO ((sizeof(acesso_t) - sizeof(usuario_t) + sizeof(uint16_t)) / sizeof(uint8_t))
+
 extern void (*usuario_listar_callback)(usuario_t *u);
+extern void (*usuario_relatorio_acesso_callback)(acesso_t *a);
 
 extern void usuario_adicionar(usuario_t *u);
 extern void usuario_listar();

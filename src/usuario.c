@@ -22,7 +22,7 @@ void usuario_adicionar(usuario_t *u) {
 		buscar_ultimo_endereco();
 
 	u->codigo = ultimo_endereco;
-	u->config = (1 << 8) | (TIPO_REGISTRO_USUARIO << CONFIG_TIPO_REGISTRO);
+	u->config = (uint8_t)((1 << 8) | (TIPO_REGISTRO_USUARIO << CONFIG_TIPO_REGISTRO));
 	at24c64_write_byte(ultimo_endereco++, u->config);
 	at24c64_write_byte(ultimo_endereco++, (uint8_t)(u->matricula >> 8));
 	at24c64_write_byte(ultimo_endereco++, (uint8_t)(u->matricula & 0xFF));
@@ -37,8 +37,9 @@ void usuario_listar(usuario_t *u) {
 			if(read & (1 << CONFIG_REGISTRO_EXCLUIDO)) {
 				//usuario excluido
 				//se o usuario estiver marcado como excluido o registro eh pulado
-				i += (sizeof(usuario_t) / sizeof(uint8_t));
+				i += NEXT_USUARIO;
 			} else {
+				//usuario ativo
 				u->codigo = i;
 				u->config = read;
 				at24c64_read_address(++i, &read);
@@ -49,12 +50,14 @@ void usuario_listar(usuario_t *u) {
 				u->senha = read << 8;
 				at24c64_read_address(++i, &read);
 				u->senha |= read;
-				usuario_listar_callback(u); //chamando funcao de evento
+				(*usuario_listar_callback)(u); //chamando funcao de evento
 			}
 		} else if (read & (TIPO_REGISTRO_ACESSO << CONFIG_TIPO_REGISTRO)) {
-			i += (sizeof(acesso_t) / sizeof(uint8_t)); //calcular o tamanho de endereco para fim de estrutura
+			//calcular o tamanho de endereco para fim de estrutura
+			i += NEXT_REGISTRO_ACESSO;
 		} else {
-			//fazer alguma coisa aqui?
+			//chegou ao fim dos registros validos
+			break;
 		}
 	}
 }
@@ -72,10 +75,54 @@ void usuario_remover(usuario_t *u) {
 void usuario_registrar_acesso(acesso_t *a){
 	if(ultimo_endereco == 0x00)
 		buscar_ultimo_endereco();
-	a->config = (1 << 8) | (TIPO_REGISTRO_ACESSO << CONFIG_TIPO_REGISTRO);
-	a->
+	a->config = (uint8_t)((1 << 8) | (TIPO_REGISTRO_ACESSO << CONFIG_TIPO_REGISTRO));
+	at24c64_write_byte(ultimo_endereco++, a->config);
+	at24c64_write_byte(ultimo_endereco++, (uint8_t)(a->cod_usuario >> 8));
+	at24c64_write_byte(ultimo_endereco++, (uint8_t)(a->cod_usuario & 0xFF));
+	at24c64_write_byte(ultimo_endereco++, a->ano);
+	at24c64_write_byte(ultimo_endereco++, a->mes);
+	at24c64_write_byte(ultimo_endereco++, a->dia);
+	at24c64_write_byte(ultimo_endereco++, a->hora);
+	at24c64_write_byte(ultimo_endereco++, a->minuto);
+	at24c64_write_byte(ultimo_endereco++, a->segundo);
 }
 
-void usuario_relatorio_acesso(acesso_t *a){
-
+void usuario_relatorio_acesso(acesso_t *a) {
+	for(i = 0 ; i < AT24C64_MAX_ADDRESS ; i++) {
+		at24c64_read_address(i, &read);
+		if(read & (TIPO_REGISTRO_ACESSO << CONFIG_TIPO_REGISTRO)) {
+			if(read & (1 << CONFIG_REGISTRO_EXCLUIDO)) {
+				//registro de acesso excluido
+				//se o registro de acesso estiver marcado como excluido o registro eh pulado
+				i += NEXT_REGISTRO_ACESSO;
+			} else {
+				//registro de acesso ativo
+				a->codigo = i;
+				a->config = read;
+				at24c64_read_address(++i, &read);
+				a->cod_usuario = read << 8;
+				at24c64_read_address(++i, &read);
+				a->cod_usuario |= read;
+				at24c64_read_address(++i, &read);
+				a->ano = read;
+				at24c64_read_address(++i, &read);
+				a->mes = read;
+				at24c64_read_address(++i, &read);
+				a->dia = read;
+				at24c64_read_address(++i, &read);
+				a->hora = read;
+				at24c64_read_address(++i, &read);
+				a->minuto = read;
+				at24c64_read_address(++i, &read);
+				a->segundo = read;
+				//(*usuario_relatorio_acesso_callback)(a);
+			}
+		} else if (read & (TIPO_REGISTRO_USUARIO << CONFIG_TIPO_REGISTRO)) {
+			//calcular o tamanho de endereco para fim de estrutura
+			i += NEXT_USUARIO;
+		} else {
+			//chegou ao fim dos registros validos
+			break;
+		}
+	}
 }
