@@ -141,9 +141,7 @@ void i2c_stop(void)
 	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO);
 	
 	// wait until stop condition is executed and bus released
-#ifndef SIMULACAO_PROTEUS
 	while(TWCR & (1<<TWSTO)); //nao funcionou na simulacao
-#endif
 
 }/* i2c_stop */
 

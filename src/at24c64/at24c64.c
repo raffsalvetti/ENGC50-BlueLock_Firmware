@@ -16,7 +16,7 @@ void at24c64_init() {
 }
 
 void at24c64_format() {
-	uint8_t i = 0;
+	uint16_t i = 0;
 	for (i = 0; i < AT24C64_MAX_ADDRESS; i++) {
 		at24c64_write_byte(i, 0x0);
 	}
@@ -28,15 +28,17 @@ void at24c64_write_byte(uint16_t address, uint8_t byte) {
 	i2c_write((uint8_t)(address & 0xFF));
 	i2c_write(byte);
 	i2c_stop();
+	_delay_ms(15);
 }
 
 void at24c64_read_address(uint16_t address, uint8_t *read) {
 	i2c_start_wait(AT24C64_ADDR | I2C_WRITE);
 	i2c_write((uint8_t)(address >> 8));
 	i2c_write((uint8_t)(address & 0xFF));
-	i2c_start_wait(AT24C64_ADDR | I2C_READ);
+	i2c_rep_start(AT24C64_ADDR | I2C_READ);
 	*read = i2c_readNak();
 	i2c_stop();
+	_delay_ms(5);
 }
 
 void at24c64_write_page(uint16_t address, const uint8_t *page) {

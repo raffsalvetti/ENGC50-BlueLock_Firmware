@@ -68,7 +68,7 @@ uint8_t ds1307_setdate(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, u
 void ds1307_getdate(uint8_t *year, uint8_t *month, uint8_t *day, uint8_t *hour, uint8_t *minute, uint8_t *second) {
 	i2c_start_wait(DS1307_ADDR | I2C_WRITE);
 	i2c_write(0x00);
-	//i2c_stop(); //nao funcionou na simulacao
+	i2c_stop(); //nao funcionou na simulacao
 	i2c_rep_start(DS1307_ADDR | I2C_READ);
 	*second = util_bcd2dec(i2c_readAck() & 0x7F);
 	*minute = util_bcd2dec(i2c_readAck());
